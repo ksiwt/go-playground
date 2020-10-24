@@ -22,7 +22,7 @@ func main() {
 			&cli.StringFlag{
 				Name:    "config",
 				Aliases: []string{"c"},
-				Usage:   "Load configuration from `FILE",
+				Usage:   "Load configuration from `FILE`",
 			},
 		},
 	}
