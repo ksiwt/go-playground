@@ -9,7 +9,7 @@ import (
 
 func main() {
 	db, err := sql.Open("mysql",
-		"user:password@tcp(127.0.0.1:3306)/go_mysql",
+		"root:0394@tcp(127.0.0.1:3306)/go_mysql",
 		)
 	if err != nil {
 		log.Fatal(err)
@@ -21,25 +21,21 @@ func main() {
 		panic(err)
 	}
 
-	var (
-		id int
-		name string
-	)
-
-	rows, err := db.Query("select id, name from users where id = ?", 1)
+	stmt, err := db.Prepare("INSERT INTO users(name) VALUES(?)")
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer rows.Close()
-	for rows.Next() {
-		err := rows.Scan(&id, &name)
-		if err != nil {
-			log.Fatal(err)
-		}
-		log.Println(id, name)
-	}
-	err = rows.Err()
+	res, err := stmt.Exec("Dolly")
 	if err != nil {
 		log.Fatal(err)
 	}
+	lastId, err := res.LastInsertId()
+	if err != nil {
+		log.Fatal(err)
+	}
+	rowCnt, err := res.RowsAffected()
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Printf("ID = %d, affected = %d\n", lastId, rowCnt)
 }
