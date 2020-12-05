@@ -1,2 +1,2 @@
 # Go playground
-this repository is playground of golang
+This repository is playground of golang
