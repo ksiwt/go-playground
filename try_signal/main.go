@@ -52,18 +52,20 @@ func doSomethingConcurrent(ctx context.Context, inputs []string) error {
 	sem := semaphore.NewWeighted(allResource)
 	var wg sync.WaitGroup
 	for _, v := range inputs {
-		// goroutineに渡す値vはループ全体で使われる変数のため、値を別の変数にコピーする。
-		v := v
 		if err := sem.Acquire(ctx, doSomethingResource); err != nil {
 			wg.Wait()
 			return err
 		}
-		go func() {
+
+		// closureをgoroutineで使う場合、goroutineの実行は任意のタイミングで行われるので、実行時のvの値は不確定。
+		// たいていのマシンではgoroutineが開始される前にfor loopが終了するため、vは最後のloopの値になる。
+		// これを回避するため、引数としてvを渡すことでvのコピーが行われ、goroutine実行時に適切な値を参照することができる。
+		go func(v string) {
 			wg.Add(1)
 			doSomething(v)
 			sem.Release(doSomethingResource)
 			wg.Done()
-		}()
+		}(v)
 	}
 	wg.Wait()
 	return nil
