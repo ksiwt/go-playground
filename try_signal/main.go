@@ -52,6 +52,7 @@ func doSomethingConcurrent(ctx context.Context, inputs []string) error {
 	sem := semaphore.NewWeighted(allResource)
 	var wg sync.WaitGroup
 	for _, v := range inputs {
+		// goroutineに渡す値vはループ全体で使われる変数のため、値を別の変数にコピーする。
 		v := v
 		if err := sem.Acquire(ctx, doSomethingResource); err != nil {
 			wg.Wait()
