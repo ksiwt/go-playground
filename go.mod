@@ -9,4 +9,5 @@ require (
 	github.com/paulmach/orb v0.2.1
 	github.com/pkg/errors v0.9.1
 	github.com/urfave/cli/v2 v2.2.0
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 )
